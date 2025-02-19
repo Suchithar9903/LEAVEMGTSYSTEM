@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap'); 
+
+/* Global Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full-Page Background */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffffff, #ffffff);
+    font-family: 'Inter', sans-serif;
+    color: #080808;
+    margin: 0;
+    padding: 0 15px;
+    overflow-y: auto;  /* Allow scrolling */
+}
+
+/* Title Styling */
+.title-container {
+    background: rgba(239, 235, 235, 0.2);
+    padding: 15px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 30px;
+    box-shadow: inset 0px 0px 10px rgba(255, 255, 255, 0.3);
+    animation: fadeIn 0.5s ease-in-out;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;  /* Allows buttons to wrap on smaller screens */
+    width: 100%;
+}
+
+.nav-button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: linear-gradient(135deg, #6679d8, #6c85f2);
+    color: #100101;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    flex: 1;
+    min-width: 120px; /* Make buttons flexible but not too small */
+}
+
+.nav-button:hover {
+    background: linear-gradient(135deg, #97a2f6, #97a2f6);
+    transform: scale(1.05);
+}
+
+/* Form Styling */
+.auth-container {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+    max-width: 500px;
+    margin: 10px;
+}
+
+/* Input Fields */
+.auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #000;
+    transition: all 0.3s ease-in-out;
+    outline: none;
+}
+
+/* Placeholder Styling */
+.auth-container input::placeholder {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Focus Effect */
+.auth-container input:focus {
+    background: rgb(180, 188, 239);
+    color: #000;
+    box-shadow: 0 0 8px rgba(194, 204, 244, 0.4);
+}
+
+/* Button Styling */
+.auth-container button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #b6c6e9, #a3c0ef);
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.auth-container button:hover {
+    background: linear-gradient(135deg, #4a61f5, #6779b9);
+    transform: scale(1.05);
+}
+
+/* Error Message */
+.auth-container .error {
+    color: #80d1ee;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    /* Make buttons stack vertically on small screens */
+    .nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .auth-container {
+        padding: 20px;
+    }
+}

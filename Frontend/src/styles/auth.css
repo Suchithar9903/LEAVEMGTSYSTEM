@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffffff, #ffffff);
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Glassmorphism Container */
+.app-container {
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0px 10px 30px rgba(78, 61, 152, 0.2);
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+    border: 3px solid rgba(72, 60, 113, 0.2);
+}
+
+
+.title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.nav-button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: linear-gradient(135deg, #acb9f6, #acb9f6);
+    color: #100101;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:hover {
+    background: linear-gradient(135deg, #5a89ed, #5a89ed);
+    transform: scale(1.05);
+}
+
+/* Form Styling */
+.auth-container {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #000; /* Ensure text is visible */
+    transition: all 0.3s ease-in-out;
+    outline: none;
+}
+
+/* Ensure placeholder text is visible too */
+.auth-container input::placeholder {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Focus effect */
+.auth-container input:focus {
+    background: rgb(180, 188, 239);
+    color: #000; /* Ensure text remains visible */
+    box-shadow: 3px rgba(194, 204, 244, 0.4);
+}
+
+
+.auth-container button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #b6c6e9, #a3c0ef);
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.auth-container button:hover {
+    background: linear-gradient(135deg, #4a61f5, #6779b9);
+    transform: scale(1.05);
+}
+
+/* Error Message */
+.auth-container .error {
+    color: #80d1ee;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.role-container {
+    width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: #705656;
+    text-align: center;
+  }
+  
+.role-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+.role-subtitle {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+.role-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds space between buttons */
+    align-items: center;
+  }
+  
+.role-button {
+    width: 200px;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: #6a5acd;
+    border: 2px solid black;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+  }
+  
+.role-button:hover {
+    background: #483d8b;
+  }
+  
+.radio-group {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 15px; /* Space between radio buttons */
+  }
+  
+.radio-group label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+.radio-group input[type="radio"] {
+    margin-right: 8px; /* Space between radio button and label */
+  }
+  
+
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .app-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

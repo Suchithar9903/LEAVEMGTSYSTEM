@@ -1,42 +1,91 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import AuthForm from "../components/AuthForm";
+import { useLocation, Link } from "react-router-dom";
+import "../styles.css";
 
 const Register = () => {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const role = queryParams.get("role"); // Extract role from query params
 
-  const handleRegister = async (event, formData) => {
-    event.preventDefault();
-    setLoading(true);
-    setError("");
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
 
-    const { name, email, password, role } = formData; // ✅ Ensure `role` is included
-    console.log("Registering with:", name, email, password, role); // ✅ Debugging
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-    try {
-      const response = await fetch("http://localhost:5001/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role }), // ✅ Sending `role`
-      });
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(`${role} registered:`, formData);
+        // Here, add API call logic to register the user
+    };
 
-      const data = await response.json();
-      console.log("Server Response:", data); // ✅ Debugging
+    return (
+        <div className="login-container">
+            <h1>Create an Account</h1>
+            <p>Register as {role === "admin" ? "Admin" : "Employee"} to access the Leave Management System</p>
 
-      if (!response.ok) throw new Error(data.error || "Registration failed");
-      alert("Registration successful! Redirecting to login...");
+            <form onSubmit={handleSubmit}>
+                <div className="input-group">
+                    <label>Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
-      navigate("/login/employee");
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+                <div className="input-group">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
-  return <AuthForm isLogin={false} onSubmit={handleRegister} errorMessage={error} loading={loading} />;
+                <div className="input-group">
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Create a password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="input-group">
+                    <label>Confirm Password</label>
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        placeholder="Confirm password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <button type="submit" className="signin-btn">Register</button>
+            </form>
+
+            <p className="register-link">
+                Already have an account? <Link to={`/login?role=${role}`}>Click here to login</Link>
+            </p>
+        </div>
+    );
 };
 
 export default Register;

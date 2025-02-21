@@ -1,36 +1,24 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import AuthForm from "../components/AuthForm";
+import React from "react";
+import { useLocation } from "react-router-dom";
+import "../styles.css";
 
 const Login = () => {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const role = queryParams.get("role"); // Extract role from query params
 
-  const handleLogin = async (event, formData) => {
-    event.preventDefault();
-    setLoading(true);
-    
-    try {
-      const response = await fetch("http://localhost:5001/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({email: formData.email, password: formData.password}),
-      });
-      
-      const data = await response.json();
-      if (!response.ok) { throw new Error(data.message || "Login failed. Please try again."); }
-      localStorage.setItem("token", data.token);
-
-      navigate("/employeedashboard");
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return <AuthForm isLogin={true} onSubmit={handleLogin} errorMessage={error} loading={loading} />;
+    return (
+        <div className="login-container">
+            <h2> Welcome to Leave Management System {role === "admin" ? "AMS (Admin)" : "AMS (Employee)"}</h2>
+            <p>Sign in to your {role} account</p>
+            <input type="text" placeholder="User Name" />
+            <input type="password" placeholder="Credentials" />
+            <button className="sign-in-btn">Sign in</button>
+            <p>
+                Don't have an account? <a href="/register">Click here to register</a>
+            </p>
+        </div>
+    );
 };
 
 export default Login;

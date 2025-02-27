@@ -1,153 +1,127 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "../styles.css";
 
 const ApplyLeave = () => {
-    const [leaveType, setLeaveType] = useState("Casual");
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
-    const [reason, setReason] = useState("");
-    const [numDays, setNumDays] = useState(0);
+    const [leaveData, setLeaveData] = useState({
+        leaveType: "",
+        startDate: "",
+        endDate: "",
+        reason: ""
+    });
 
-    // Calculate leave days when dates change
-    const calculateLeaveDays = (start, end) => {
-        if (start && end) {
-            const startD = new Date(start);
-            const endD = new Date(end);
-            const diffTime = endD - startD;
-            const diffDays = diffTime / (1000 * 60 * 60 * 24) + 1;
-            setNumDays(diffDays > 0 ? diffDays : 0);
-        } else {
-            setNumDays(0);
-        }
+    const [message, setMessage] = useState(""); // ✅ Success message
+    const [leaveDays, setLeaveDays] = useState(0); // ✅ Track leave days excluding weekends
+    const [leaveHistory, setLeaveHistory] = useState([]); // ✅ Store applied leave history
+
+    // Handle input change
+    const handleChange = (e) => {
+        setLeaveData({ ...leaveData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (numDays <= 0) {
-            alert("End date must be after start date!");
-            return;
+    // Function to calculate leave days excluding weekends
+    const calculateLeaveDays = (start, end) => {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        let count = 0;
+
+        while (startDate <= endDate) {
+            const day = startDate.getDay(); // 0 = Sunday, 6 = Saturday
+            if (day !== 0 && day !== 6) {
+                count++; // Count only weekdays
+            }
+            startDate.setDate(startDate.getDate() + 1); // Move to next day
         }
+        return count;
+    };
 
-        const leaveRecord = {
-            leaveType,
-            startDate,
-            endDate,
-            reason,
-            numDays,
+    // Auto-calculate leave days when startDate or endDate changes
+    useEffect(() => {
+        if (leaveData.startDate && leaveData.endDate) {
+            setLeaveDays(calculateLeaveDays(leaveData.startDate, leaveData.endDate));
+        }
+    }, [leaveData.startDate, leaveData.endDate]);
+
+    // Fetch leave history when the component loads
+    useEffect(() => {
+        const fetchLeaveHistory = async () => {
+            try {
+                const response = await axios.get("/api/leave-requests/history");
+                setLeaveHistory(response.data);
+            } catch (error) {
+                console.error("Error fetching leave history:", error);
+            }
         };
+        fetchLeaveHistory();
+    }, []);
 
-        // Save to local storage (simulate storing the leave record)
-        let storedLeaves = JSON.parse(localStorage.getItem("leaveRecords")) || [];
-        storedLeaves.push(leaveRecord);
-        localStorage.setItem("leaveRecords", JSON.stringify(storedLeaves));
+    // Handle leave submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const employeeEmail = localStorage.getItem("userEmail"); // Retrieve logged-in user's email
+            
+            const leaveRequest = {
+                ...leaveData,
+                leaveDays,
+                employeeEmail // Associate leave request with employee
+            };
+            console.log("Submitting leave request:", leaveRequest); // 🔍 Debugging log
 
-        alert("Leave Applied Successfully!");
-        setLeaveType("Casual");
-        setStartDate("");
-        setEndDate("");
-        setReason("");
-        setNumDays(0);
+            // Submit leave request
+            const response = await axios.post("/api/leave-requests", leaveRequest);
+            console.log("Response from server:", response.data); // 🔍 Check response
+
+            setMessage(response.data.message); // ✅ Show success message
+
+
+            const historyResponse = await axios.get(`/api/leave-requests/status?email=${employeeEmail}`);
+            setLeaveHistory(historyResponse.data);
+    
+            // ✅ Update leave history immediately
+            setLeaveHistory([...leaveHistory, response.data.leaveRequest]);
+
+            // ✅ Reset form after submission
+            setLeaveData({ leaveType: "", startDate: "", endDate: "", reason: "" });
+            setLeaveDays(0); // Reset leave days count
+
+        } catch (error) {
+            console.error("Error submitting leave request", error);
+            setMessage("Failed to submit leave request.");
+        }
     };
 
     return (
-        <div style={styles.pageContainer}>
-            <div style={styles.formContainer}>
-                <h2 style={styles.heading}>Apply Leave Form</h2>
-                <form onSubmit={handleSubmit} style={styles.form}>
-                    <label style={styles.label}>Leave Type:</label>
-                    <select style={styles.input} value={leaveType} onChange={(e) => setLeaveType(e.target.value)}>
-                        <option value="Casual">Casual</option>
-                        <option value="Sick">Sick</option>
-                        <option value="Annual">Annual</option>
-                        <option value="Maternity">Maternity</option>
-                        <option value="Other">Other</option>
-                    </select>
+        <div className="form-container">
+            <h2>Apply for Leave</h2>
 
-                    <label style={styles.label}>Start Date:</label>
-                    <input type="date" style={styles.input} value={startDate} onChange={(e) => { setStartDate(e.target.value); calculateLeaveDays(e.target.value, endDate); }} required />
+            {message && <p className="success-message">{message}</p>} {/* ✅ Show success message */}
 
-                    <label style={styles.label}>End Date:</label>
-                    <input type="date" style={styles.input} value={endDate} onChange={(e) => { setEndDate(e.target.value); calculateLeaveDays(startDate, e.target.value); }} required />
+            <form onSubmit={handleSubmit}>
+                <label>Leave Type:</label>
+                <select name="leaveType" value={leaveData.leaveType} onChange={handleChange} required>
+                    <option value="">Select</option>
+                    <option value="Sick Leave">Sick Leave</option>
+                    <option value="Casual Leave">Casual Leave</option>
+                    <option value="Annual Leave">Annual Leave</option>
+                </select>
 
-                    <label style={styles.label}>Reason:</label>
-                    <textarea style={styles.textarea} value={reason} onChange={(e) => setReason(e.target.value)} required />
+                <label>Start Date:</label>
+                <input type="date" name="startDate" value={leaveData.startDate} onChange={handleChange} required />
 
-                    <p style={styles.numDays}><strong>Number of Days:</strong> {numDays}</p>
+                <label>End Date:</label>
+                <input type="date" name="endDate" value={leaveData.endDate} onChange={handleChange} required />
 
-                    <button type="submit" style={styles.button}>Apply for Leave</button>
-                </form>
-            </div>
+                <label>Reason:</label>
+                <textarea name="reason" value={leaveData.reason} onChange={handleChange} required></textarea>
+
+                <p><strong>Leave Days (Excluding Sat & Sun):</strong> {leaveDays}</p>
+
+                <button type="submit">Submit</button>
+            </form>
+        
         </div>
     );
-};
-
-// Improved CSS styles
-const styles = {
-    pageContainer: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        backgroundColor: "#1e3a8a", // Dark blue background
-    },
-    formContainer: {
-        backgroundColor: "#fff",
-        padding: "25px",
-        borderRadius: "10px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "400px",
-        textAlign: "center",
-    },
-    heading: {
-        color: "#1e3a8a",
-        marginBottom: "15px",
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "12px",
-    },
-    label: {
-        fontSize: "16px",
-        fontWeight: "bold",
-        alignSelf: "flex-start",
-        marginLeft: "20px",
-        color: "#1e3a8a",
-    },
-    input: {
-        width: "100%",
-        padding: "8px",
-        borderRadius: "5px",
-        border: "1px solid #ccc",
-        fontSize: "16px",
-    },
-    textarea: {
-        width: "100%",
-        height: "80px",
-        padding: "8px",
-        borderRadius: "5px",
-        border: "1px solid #ccc",
-        fontSize: "16px",
-        resize: "none",
-    },
-    numDays: {
-        fontSize: "18px",
-        fontWeight: "bold",
-        color: "#1e3a8a",
-    },
-    button: {
-        backgroundColor: "#1e3a8a",
-        color: "#fff",
-        padding: "10px 15px",
-        fontSize: "16px",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        transition: "background 0.3s",
-    },
-    buttonHover: {
-        backgroundColor: "#163172",
-    }
 };
 
 export default ApplyLeave;

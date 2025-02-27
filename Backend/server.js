@@ -3,12 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-const authRoutes = require("./routes/auth");
-const leaveRoutes = require("./routes/leave");
+const authRoutes = require("./routes/authRoutes");
+const leaveRoutes = require("./routes/leaveRoutes");
 const connectDB = require("./config/db");
 
 const app = express();
-connectDB();
 
 //Mongodb
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true,})
@@ -18,6 +17,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 app.use(express.json());
 app.use(cors());
+connectDB();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/leave", leaveRoutes);

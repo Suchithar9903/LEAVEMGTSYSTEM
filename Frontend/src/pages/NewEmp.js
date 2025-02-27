@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "../styles.css";
-import API from "../axios";
 
 const NewEmp = () => {
     const [role, setRole] = useState("employee");
@@ -10,13 +10,13 @@ const NewEmp = () => {
 
     const handleRegister = async () => {
         try {
-            const response = await API.post("/api/auth/register", {
+            const response = await axios.post("http://localhost:5000/api/auth/register", {
                 name,
                 email,
                 password,
                 role,
             });
-    
+
             if (response.status === 201) {
                 alert(`${role} registered successfully!`);
                 setName("");
@@ -27,6 +27,7 @@ const NewEmp = () => {
             alert(error.response?.data?.error || "Registration failed");
         }
     };
+
     return (
         <div className="dashboard-container">
             <h2>Admin Dashboard</h2>
@@ -64,4 +65,3 @@ const NewEmp = () => {
 };
 
 export default NewEmp;
-

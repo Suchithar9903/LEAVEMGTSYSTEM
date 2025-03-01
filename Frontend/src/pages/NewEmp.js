@@ -10,13 +10,17 @@ const NewEmp = () => {
 
     const handleRegister = async () => {
         try {
+            console.log("Sending request:", { name, email, password, role });
+    
             const response = await axios.post("http://localhost:5000/api/auth/register", {
                 name,
                 email,
                 password,
                 role,
             });
-
+    
+            console.log("Response received:", response.data);
+    
             if (response.status === 201) {
                 alert(`${role} registered successfully!`);
                 setName("");
@@ -24,6 +28,7 @@ const NewEmp = () => {
                 setPassword("");
             }
         } catch (error) {
+            console.error("Registration error:", error.response?.data?.error);
             alert(error.response?.data?.error || "Registration failed");
         }
     };
@@ -36,7 +41,7 @@ const NewEmp = () => {
             <label>Role</label>
             <select value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="employee">Employee</option>
-                <option value="admin">Admin</option>
+                <option value="manager">Manager</option>
             </select>
 
             <input

@@ -10,6 +10,9 @@ const RoleSelection = () => {
             <Link to="/employee-login">
                 <button className="role-btn">Employee Login</button>
             </Link>
+            <Link to="/manager-login">
+                <button className="role-btn">Manager Login</button>
+            </Link>
             <Link to="/admin-login">
                 <button className="role-btn">Admin Login</button>
             </Link>

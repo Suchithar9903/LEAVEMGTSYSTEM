@@ -2,19 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../styles.css";
 
-const AdminDashboard = () => {
+const ManagerDashboard = () => {
     return (
         <div className="dashboard-container">
-            <h2>Welcome to Admin Dashboard</h2>
-            <p>You can add new Employee and New Managers here.</p>
+            <h2>Welcome to Manager Dashboard</h2>
+            <p>You can manage leave applications here.</p>
             
             <nav>
                 <ul>
-                    <li><Link to="/register-user">Register New User</Link></li>
+                    <li><Link to="/leave-approvals">Manage Leave Approvals</Link></li>
                 </ul>
             </nav>
         </div>
     );
 };
 
-export default AdminDashboard;
+export default ManagerDashboard;

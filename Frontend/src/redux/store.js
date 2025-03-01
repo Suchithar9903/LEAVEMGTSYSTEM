@@ -1,10 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import leaveReducer from "./leaveSlice"; // Import your leave slice
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './leaveSlice';
 
-const store = configureStore({
+export const store = configureStore({
     reducer: {
-        leave: leaveReducer,  // Add the leave slice to Redux store
+        auth: authReducer
     }
 });
-
-export default store;

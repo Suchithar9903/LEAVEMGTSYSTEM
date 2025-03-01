@@ -1,8 +1,18 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import "../styles.css";
 
 const EmployeeDashboard = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || user.role !== "employee") {
+            navigate("/");
+        }
+    }, []);
+
     return (
         <div className="dashboard-container">
             <h2>Welcome to Employee Dashboard</h2>

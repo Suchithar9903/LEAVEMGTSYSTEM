@@ -6,7 +6,7 @@ const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Register a new Employee or Manager (Admin only)
+// Register a new Employee or Manager (Admin only)     
 router.post("/register-user", async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
@@ -15,24 +15,22 @@ router.post("/register-user", async (req, res) => {
             return res.status(400).json({ error: "All fields are required" });
         }
 
-        // Check if the user already exists
-        const existingEmployee = await User.findOne({ email });
-        const existingManager = await User.findOne({ email });
-
-        if (existingEmployee || existingManager) {
-            return res.status(400).json({ error: "User already exists" });
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.statmus(400).json({ error: "User already exists" });
         }
 
+        // Hash password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let newUser;
-        if (role === "employee") {
-            newUser = new User({ name, email, password: hashedPassword, role: "employee" });
-        } else if (role === "manager") {
-            newUser = new User({ name, email, password: hashedPassword, role: "manager" });
-        } else {
-            return res.status(400).json({ error: "Invalid role specified" });
-        }
+        // Create new user
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            role, // Role will be either "employee" or "manager"
+        });
 
         await newUser.save();
         res.status(201).json({ message: `${role} registered successfully!` });
@@ -119,24 +117,24 @@ router.post("/login/manager", async (req, res) => {
 });
 
 // Get user profile details
-// router.get("/profile", authMiddleware, async (req, res) => {
-//     try {
-//         const user = await User.findById(req.user.id).select("-password");
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-//         res.json(user);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server error" });
-//     }
-// });
-
-router.get("/profile", protect, (req, res) => {
-    res.json({ 
-        id: req.user.id, 
-        email: req.user.email, 
-        role: req.user.role 
-    });
+router.get("/profile", protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("-password");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
 });
+
+// router.get("/profile", protect, (req, res) => {
+//     res.json({ 
+//         id: req.user.id, 
+//         email: req.user.email, 
+//         role: req.user.role 
+//     });
+// });
 
 module.exports = router;

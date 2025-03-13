@@ -302,3 +302,41 @@ button {
 }
 
 
+.profile-container {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.profile-icon {
+    font-size: 30px;
+    color: #333;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 150px;
+    text-align: center;
+}
+
+.logout-btn {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.logout-btn:hover {
+    background-color: #706bc9;
+}

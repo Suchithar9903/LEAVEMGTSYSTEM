@@ -5,7 +5,6 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 
-dotenv.config();
 const app = express();
 
 // Middleware

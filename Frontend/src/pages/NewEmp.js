@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../styles.css";
 
 const NewEmp = () => {
@@ -8,8 +9,11 @@ const NewEmp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState(""); 
+    const navigate = useNavigate(); // Initialize navigate function
 
-    const handleRegister = async () => {
+    const handleRegister = async (e) => {
+        e.preventDefault(); // Prevent form submission default behavior
+
         try {
             const response = await axios.post("http://localhost:5000/api/auth/register-user", {
                 name,
@@ -28,7 +32,6 @@ const NewEmp = () => {
             alert(error.response?.data?.error || "Registration failed");
         }
     };
-    
 
     return (
         <div className="dashboard-container">
@@ -67,6 +70,11 @@ const NewEmp = () => {
                 />
                 <button className="register-btn" type="submit">
                     Register {role}
+                </button>
+
+                {/* Navigate to Admin Dashboard on Click */}
+                <button type="button" onClick={() => navigate("/admin-dashboard")}>
+                    ← Back to Dashboard
                 </button>
             </form>
         </div>

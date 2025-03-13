@@ -11,6 +11,7 @@ import NewEmp from "./pages/NewEmp";
 import ApplyLeave from "./pages/ApplyLeave";
 import LeaveHistory from "./pages/LeaveHistory";
 import LeaveApprovals from "./pages/LeaveApprovals";
+import MyProfile from "./pages/MyProfile";
 import "./styles.css";
 
 // Private Route Component for Role-Based Access
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="/apply-leave" element={<PrivateRoute element={<ApplyLeave />} role="employee" />} />
                 <Route path="/leave-history" element={<PrivateRoute element={<LeaveHistory />} role="employee" />} />
                 <Route path="/leave-approvals" element={<PrivateRoute element={<LeaveApprovals />} role="manager" />} />
+                <Route path="/my-profile" element={<MyProfile />} />
             </Routes>
         </Router>
     );

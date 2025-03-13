@@ -35,7 +35,7 @@ const EmployeeLogin = () => {
             <h2>Employee Login</h2>
             <input type="email" placeholder="Employee Email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button className="sign-in-btn" onClick={handleLogin}>Sign in</button>
+            <button className="sign-in-btn" onClick={handleLogin}>Login </button>
         </div>
     );
 };

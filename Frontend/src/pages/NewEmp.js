@@ -7,20 +7,17 @@ const NewEmp = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState(""); 
 
     const handleRegister = async () => {
         try {
-            console.log("Sending request:", { name, email, password, role });
-    
-            const response = await axios.post("http://localhost:5000/api/auth/register", {
+            const response = await axios.post("http://localhost:5000/api/auth/register-user", {
                 name,
                 email,
                 password,
                 role,
             });
-    
-            console.log("Response received:", response.data);
-    
+
             if (response.status === 201) {
                 alert(`${role} registered successfully!`);
                 setName("");
@@ -28,43 +25,50 @@ const NewEmp = () => {
                 setPassword("");
             }
         } catch (error) {
-            console.error("Registration error:", error.response?.data?.error);
             alert(error.response?.data?.error || "Registration failed");
         }
     };
+    
 
     return (
         <div className="dashboard-container">
             <h2>Admin Dashboard</h2>
             <h3>Register New User</h3>
 
-            <label>Role</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-                <option value="employee">Employee</option>
-                <option value="manager">Manager</option>
-            </select>
+            {message && <p className="message">{message}</p>}
 
-            <input
-                type="text"
-                placeholder="Full Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button className="register-btn" onClick={handleRegister}>
-                Register {role}
-            </button>
+            <form onSubmit={handleRegister}>
+                <label>Role</label>
+                <select value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="employee">Employee</option>
+                    <option value="manager">Manager</option>
+                </select>
+
+                <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button className="register-btn" type="submit">
+                    Register {role}
+                </button>
+            </form>
         </div>
     );
 };

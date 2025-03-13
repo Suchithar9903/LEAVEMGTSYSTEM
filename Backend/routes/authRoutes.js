@@ -1,14 +1,13 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Employee = require("../models/Employee");
-const Manager = require("../models/Manager");
-const { adminAuth } = require("../middleware/authMiddleware");
+const User = require('../models/User');
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 // Register a new Employee or Manager (Admin only)
-router.post("/register", adminAuth, async (req, res) => {
+router.post("/register-user", async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
@@ -17,8 +16,8 @@ router.post("/register", adminAuth, async (req, res) => {
         }
 
         // Check if the user already exists
-        const existingEmployee = await Employee.findOne({ email });
-        const existingManager = await Manager.findOne({ email });
+        const existingEmployee = await User.findOne({ email });
+        const existingManager = await User.findOne({ email });
 
         if (existingEmployee || existingManager) {
             return res.status(400).json({ error: "User already exists" });
@@ -28,9 +27,9 @@ router.post("/register", adminAuth, async (req, res) => {
 
         let newUser;
         if (role === "employee") {
-            newUser = new Employee({ name, email, password: hashedPassword, role: "employee" });
+            newUser = new User({ name, email, password: hashedPassword, role: "employee" });
         } else if (role === "manager") {
-            newUser = new Manager({ name, email, password: hashedPassword, role: "manager" });
+            newUser = new User({ name, email, password: hashedPassword, role: "manager" });
         } else {
             return res.status(400).json({ error: "Invalid role specified" });
         }
@@ -44,12 +43,23 @@ router.post("/register", adminAuth, async (req, res) => {
     }
 });
 
+
+// Get all users (Admin only)
+router.get("/users", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch users" });
+    }
+});
+
 // Employee Login
 router.post("/login/employee", async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await Employee.findOne({ email });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ error: "Employee not found" });
         }
@@ -81,7 +91,7 @@ router.post("/login/manager", async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await Manager.findOne({ email });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ error: "Manager not found" });
         }
@@ -108,16 +118,25 @@ router.post("/login/manager", async (req, res) => {
     }
 });
 
-// Get all users (Admin only)
-router.get("/users", adminAuth, async (req, res) => {
-    try {
-        const employees = await Employee.find();
-        const managers = await Manager.find();
-        res.status(200).json({ employees, managers });
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ error: "Failed to fetch users" });
-    }
+// Get user profile details
+// router.get("/profile", authMiddleware, async (req, res) => {
+//     try {
+//         const user = await User.findById(req.user.id).select("-password");
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
+//         res.json(user);
+//     } catch (error) {
+//         res.status(500).json({ message: "Server error" });
+//     }
+// });
+
+router.get("/profile", protect, (req, res) => {
+    res.json({ 
+        id: req.user.id, 
+        email: req.user.email, 
+        role: req.user.role 
+    });
 });
 
 module.exports = router;

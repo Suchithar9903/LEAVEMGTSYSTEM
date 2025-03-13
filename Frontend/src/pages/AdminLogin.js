@@ -20,14 +20,12 @@ const AdminLogin = () => {
         }
     };
     
-    
-
     return (
         <div className="login-container">
             <h2>Admin Login</h2>
             <input type="text" placeholder="Admin Username" value={username} onChange={(e) => setUsername(e.target.value)} />
             <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button className="sign-in-btn" onClick={handleLogin}>Sign in</button>
+            <button className="sign-in-btn" onClick={handleLogin}>Login</button>
         </div>
     );
 };

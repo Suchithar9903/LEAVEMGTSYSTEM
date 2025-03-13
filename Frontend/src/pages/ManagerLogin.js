@@ -36,7 +36,7 @@ const ManagerLogin = () => {
             <h2>Manager Login</h2>
             <input type="email" placeholder="Manager Email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button className="sign-in-btn" onClick={handleLogin}>Sign in</button>
+            <button className="sign-in-btn" onClick={handleLogin}>Login</button>
         </div>
     );
 };

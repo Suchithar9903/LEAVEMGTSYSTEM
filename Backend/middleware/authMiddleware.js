@@ -1,64 +1,22 @@
 const jwt = require("jsonwebtoken");
-const Employee = require("../models/Employee");
-const Manager = require("../models/Manager");
+const User = require("../models/User"); 
+const asyncHandler = require("express-async-handler");
 
-// Employee Authentication Middleware
-const employeeAuth = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization")?.replace("Bearer ", "");
-        if (!token) return res.status(401).json({ error: "Access denied" });
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const employee = await Employee.findById(decoded.id);
-
-        if (!employee || decoded.role !== "employee") {
-            return res.status(403).json({ error: "Unauthorized: Employees only" });
+const protect = asyncHandler(async (req, res, next) => {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+        try {
+            token = req.headers.authorization.split(" ")[1]; // Extract token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+            req.user = await User.findOne({ email: decoded.email }).select("-password"); // Fetch user
+            if (!req.user) throw new Error("User not found");
+            next();
+        } catch (error) {
+            res.status(401).json({ message: "Not authorized, token failed" });
         }
-
-        req.user = employee;
-        next();
-    } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
+    } else {
+        res.status(401).json({ message: "No token, not authorized" });
     }
-};
+});
 
-// Manager Authentication Middleware
-const managerAuth = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization")?.replace("Bearer ", "");
-        if (!token) return res.status(401).json({ error: "Access denied" });
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const manager = await Manager.findById(decoded.id);
-
-        if (!manager || decoded.role !== "manager") {
-            return res.status(403).json({ error: "Unauthorized: Managers only" });
-        }
-
-        req.user = manager;
-        next();
-    } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
-    }
-};
-
-// Admin Authentication Middleware
-const adminAuth = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization")?.replace("Bearer ", "");
-        if (!token) return res.status(401).json({ error: "Access denied" });
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        if (decoded.role !== "admin") {
-            return res.status(403).json({ error: "Unauthorized: Admins only" });
-        }
-
-        req.user = decoded;
-        next();
-    } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
-    }
-};
-
-module.exports = { employeeAuth, managerAuth, adminAuth };
+module.exports = { protect };

@@ -10,26 +10,28 @@ const ManagerLogin = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/auth/login/manager", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await response.json();
-            console.log("Manager Login Response:", data);
-
-            if (response.ok && data.user.role === "manager") {
-                localStorage.setItem("user", JSON.stringify({ role: "manager", token: data.token }));
+            const response = await axios.post("http://localhost:5000/api/auth/login/manager", { email, password });
+    
+            console.log("Login Response:", response.data); // Debugging
+    
+            if (response.data?.user?.role === "manager") {
+                localStorage.setItem("user", JSON.stringify({
+                    token: response.data.token,
+                    role: response.data.user.role,
+                    name: response.data.user.name,  
+                    email: response.data.user.email 
+                }));
+    
                 navigate("/manager-dashboard");
             } else {
                 alert("Access denied. Managers only.");
             }
         } catch (error) {
-            console.error("Manager login error:", error);
-            alert("Something went wrong. Check console.");
+            console.error("Login failed:", error.response?.data || error.message);
+            alert(error.response?.data?.error || "Something went wrong. Please try again.");
         }
     };
+    
 
     return (
         <div className="login-container">

@@ -117,27 +117,23 @@ router.post("/login/manager", async (req, res) => {
     }
 });
 
-// Get user profile details
-// router.get("/profile", protect, async (req, res) => {
-//     try {
-//         const user = await User.findById(req.user.id).select("-password");
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-//         res.json(user);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server error" });
-//     }
-// });
+// Route to fetch user details by email
+router.get("/get-user/:email", async (req, res) => {
+    try {
+        const email = req.params.email;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ name: user.name, email: user.email, role: user.role });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+});
 
 router.get("/api/auth/profile", protect, getUserProfile);
 
-// router.get("/profile", protect, async (req, res) => {
-//     res.json({ 
-//         id: req.user.id, 
-//         email: req.user.email, 
-//         role: req.user.role 
-//     });
-// });
 
 module.exports = router;

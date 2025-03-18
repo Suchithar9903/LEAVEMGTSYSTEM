@@ -11,7 +11,11 @@ import NewEmp from "./pages/NewEmp";
 import ApplyLeave from "./pages/ApplyLeave";
 import LeaveHistory from "./pages/LeaveHistory";
 import LeaveApprovals from "./pages/LeaveApprovals";
-import MyProfile from "./pages/MyProfile";
+import Profile from "./pages/MyProfile";
+import store from "./redux/store"; 
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "./redux/userSlice";
 import "./styles.css";
 
 // Private Route Component for Role-Based Access
@@ -21,6 +25,14 @@ const PrivateRoute = ({ element, role }) => {
 };
 
 const App = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            dispatch(fetchUser());
+        }
+    }, [dispatch]);
+
     return (
         <Router>
             <Routes>
@@ -40,7 +52,7 @@ const App = () => {
                 <Route path="/apply-leave" element={<PrivateRoute element={<ApplyLeave />} role="employee" />} />
                 <Route path="/leave-history" element={<PrivateRoute element={<LeaveHistory />} role="employee" />} />
                 <Route path="/leave-approvals" element={<PrivateRoute element={<LeaveApprovals />} role="manager" />} />
-                <Route path="/my-profile" element={<MyProfile />} />
+                <Route path="/profile" element={<Profile />} />
             </Routes>
         </Router>
     );

@@ -15,6 +15,21 @@ app.use(cors({
     credentials: true
 }));
 
+app.get("/api/auth/profile", async (req, res) => {
+    try {
+        const userId = req.user?.id;  // Ensure authentication middleware sets req.user
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+        const user = await User.findById(userId).select("-password");
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.json(user);
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 // Ensure MONGO_URI is set
 if (!process.env.MONGO_URI) {
     console.error("Error: MONGO_URI is not defined in .env file");

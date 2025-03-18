@@ -3,7 +3,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require('../models/User');
 const { protect } = require("../middleware/authMiddleware");
-
+const { getUserProfile } = require("../controllers/userController");
+const { authMiddleware } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 // Register a new Employee or Manager (Admin only)     
@@ -18,7 +19,7 @@ router.post("/register-user", async (req, res) => {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.statmus(400).json({ error: "User already exists" });
+            return res.status(400).json({ error: "User already exists" });
         }
 
         // Hash password before saving
@@ -117,19 +118,21 @@ router.post("/login/manager", async (req, res) => {
 });
 
 // Get user profile details
-router.get("/profile", protect, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select("-password");
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
+// router.get("/profile", protect, async (req, res) => {
+//     try {
+//         const user = await User.findById(req.user.id).select("-password");
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
+//         res.json(user);
+//     } catch (error) {
+//         res.status(500).json({ message: "Server error" });
+//     }
+// });
 
-// router.get("/profile", protect, (req, res) => {
+router.get("/api/auth/profile", protect, getUserProfile);
+
+// router.get("/profile", protect, async (req, res) => {
 //     res.json({ 
 //         id: req.user.id, 
 //         email: req.user.email, 

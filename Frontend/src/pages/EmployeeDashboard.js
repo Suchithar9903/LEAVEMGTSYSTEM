@@ -12,6 +12,7 @@ const EmployeeDashboard = () => {
             navigate("/"); 
         } else {
             setUser(storedUser);
+            navigate("/employee-dashboard")
         }
     }, [navigate]);
 

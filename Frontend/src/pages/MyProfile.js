@@ -8,11 +8,11 @@ const MyProfile = () => {
     const navigate = useNavigate();
 
         const fetchUserProfile = async () => {
-            const token = localStorage.getItem("token");
+            const token = JSON.parse(localStorage.getItem("user"));
             console.log("Fetching profile with token:", token);
         
             try {
-                const response = await axios.get("http://localhost:5000/api/auth/profile", {
+                const response = await axios.get("/api/profile", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 console.log("Profile Data:", response.data);
